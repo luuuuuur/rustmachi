@@ -1,0 +1,12 @@
+{
+    "Server":{
+        "virtual_ip":123231,
+        "port":8080,
+        "identifier":"random name"
+    },
+    "Client":{
+        "virtual_ip":1323123,
+        "port":3321323,
+        "identifier":"random name"
+    }
+}

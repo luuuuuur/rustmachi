@@ -1,8 +1,4 @@
-mod miku_core;
-
-use crate::miku_core::rustmachi::rustmachi;
-
-
-fn main() {
-    rustmachi();
+#[tokio::main]
+async fn main() {
+    println!("Hello world");
 }
