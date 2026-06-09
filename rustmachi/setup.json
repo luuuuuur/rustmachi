@@ -2,6 +2,8 @@
     "Server":{
         "virtual_ip":123231,
         "port":8080,
+        "ssh_ip":323232,
+        "ssh_port":22,
         "identifier":"random name"
     },
     "Client":{

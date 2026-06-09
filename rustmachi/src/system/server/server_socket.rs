@@ -4,13 +4,12 @@
 use std::net::{Ipv4Addr, SocketAddrV4};
 mod setup_server;
 mod server_tun;
-use server_tun::Tunnel;
-use setup_server::ServerJSON;
+use setup_server::Setup
 
 
 //get json data -> creates socket
-pub fn create(json_data: ServerJSON, tunnel: Tunnel) -> SocketAddrV4{
-    let socket: SocketAddrV4 = SocketAddrV4::new(tunnel.virtual_ip, ServerJSON.port);
+pub fn create(setup: Setup) -> SocketAddrV4{
+    let socket: SocketAddrV4 = SocketAddrV4::new(setup.get_ip(), setup.get_port());
     socket
 }
 
