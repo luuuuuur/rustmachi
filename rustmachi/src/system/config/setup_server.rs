@@ -4,11 +4,10 @@ use serde::Deserialize;
 use std::fs;
 #[derive(Deserialize)]
 pub struct ServerJSON{
-    virtual_ip: Ipv4Addr,
+    ipv4: Ipv4Addr,
     port: u16,
     ssh_ip: Ipv4Addr,
-    ssh_port: u16,
-    identifier: String
+    ssh_port: u16
 }
 pub struct Setup{
     #[serde(rename="Server")]
@@ -16,20 +15,27 @@ pub struct Setup{
 }
 
 impl ServerJSON{
-    pub fn new(ipv4:u32,port:u16,identifier:String){
+    pub fn new(ipv4: Ipv4Addr, port: u16, ssh_ip: Ipv4Addr, ssh_port: u16)->Self{
         Self{
             ipv4,
             port,
-            identifier
+            ssh_ip,
+            ssh_port
         }
     }
 }
 impl Setup{
     pub fn get_ip(&self) -> std::net::Ipv4Addr {
-        &self.server.virtual_ip
+        self.setup.server.ipv4
     }
     pub fn get_port(&self) -> u16{
-        &self.server.port
+        self.setup.server.port
+    }
+    pub fn get_sship(&self)-> Ipv4Addr{
+        self.setup.server.ssh_ip
+    }
+    pub fn get_sshport(&self)-> u16{
+        self.setup.server.ssh_port
     }
 }
 pub trait JsonLOAD{

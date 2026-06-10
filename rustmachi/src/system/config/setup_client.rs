@@ -4,22 +4,20 @@ use serde::Deserialize;
 use std::fs;
 #[derive(Deserialize,Debug)]
 pub struct ClientJSON{
-    virtual_ip: Ipv4Addr,
+    ipv4: Ipv4Addr,
     port: u16,
-    identifier: String
 }
 #[derive(Deserialize)]
-struct Setup{
+pub struct Setup{
     #[serde(rename="Client")]
     client: ClientJSON
 }
 
 impl ClientJSON{
-    pub fn new(ipv4:u32,port:u16,identifier:String){
+    pub fn new(ipv4:Ipv4Addr,port:u16,identifier:String){
         Self{
             ipv4,
             port,
-            identifier
         }
     }
     pub fn ipv4(&self) -> std::net::Ipv4Addr {
@@ -27,9 +25,6 @@ impl ClientJSON{
     }
     pub fn port(&self) -> u16 {
         self.port
-    }
-    pub fn identifier(&self) -> &str {
-        &self.identifier
     }
 }
 
