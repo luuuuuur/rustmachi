@@ -1,15 +1,15 @@
+
+use tun_rs::{AsyncDevice};
 //creates a tun from the JSON FILE
-use std::net::{Ipv4Addr};
-mod setup_client;
-use setup_client::Setup;
+use crate::system::config::setup_client::Setup;
 use std::io::Error;
 pub struct ClientTunnel{
-    setup: Setup,
-    identifier: String,
-    netmask: u16
+    pub setup: Setup,
+    pub identifier: String,
+    pub netmask: u16
 }
 impl ClientTunnel{
-    fn new(setup:Setup, netmask: u16, identifier: String) ->Self{
+    pub fn new(setup:Setup, netmask: u16, identifier: String) ->Self{
         Self{
             setup, 
             netmask,
@@ -20,17 +20,13 @@ impl ClientTunnel{
         self.netmask
     }
     fn get_identifier(&self) -> String{
-        self.identifier
+        self.identifier.clone()
     }
 }
 
 pub trait CreateTunnel{
-    fn netmask(&self) -> String{
-
-    }
-    fn create_device(&self) -> Result<Device, Error>{
-
-    }
+    fn netmask(&self) -> String;
+    async fn create_device(&self) -> Result<tun_rs::AsyncDevice, Error>;
 }
 
 impl CreateTunnel for ClientTunnel{
@@ -44,20 +40,20 @@ impl CreateTunnel for ClientTunnel{
             mask & 0xff
         )
     }
-    async fn create_device(&self)-> Result<Device,Error>{
-        let mask = self.netmask();
-        let device = match DeviceBuilder::new()
-        .name(self.setup.client.identifier)
+    async fn create_device(&self)-> Result<AsyncDevice,Error>{
+        let _mask = self.netmask();
+        match tun_rs::DeviceBuilder::new()
+        .name(self.setup.identifier())
         .mtu(1400)
-        .ipv4(self.setup.client.get_ip().to_string(), self.netmask(),None)
+        .ipv4(self.setup.ipv4().to_string(), self.netmask(),None)
         .build_async()
-        .await{
-            Ok(device) => {
-                return Ok(device)
-            },
-            Err(e) => {
-                return Err(e)
-            }
+        { 
+            Ok(device) => { 
+                return Ok(device) 
+            }, 
+            Err(e) => { 
+                return Err(e) 
+            } 
         };
     }
 }

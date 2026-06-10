@@ -9,6 +9,7 @@ pub struct ServerJSON{
     ssh_ip: Ipv4Addr,
     ssh_port: u16
 }
+#[derive(Deserialize)]
 pub struct Setup{
     #[serde(rename="Server")]
     server:ServerJSON
@@ -26,23 +27,23 @@ impl ServerJSON{
 }
 impl Setup{
     pub fn get_ip(&self) -> std::net::Ipv4Addr {
-        self.setup.server.ipv4
+        self.server.ipv4
     }
     pub fn get_port(&self) -> u16{
-        self.setup.server.port
+        self.server.port
     }
     pub fn get_sship(&self)-> Ipv4Addr{
-        self.setup.server.ssh_ip
+        self.server.ssh_ip
     }
     pub fn get_sshport(&self)-> u16{
-        self.setup.server.ssh_port
+        self.server.ssh_port
     }
 }
-pub trait JsonLOAD{
-    fn setup_server()->Result<ServerJSON, Box<dyn Error>>{
+pub trait JsonLOADSERVER{
+    fn setup_server()->Result<Setup, Box<dyn Error>>{
         let json_content = fs::read_to_string("setup.json")?;
         let setup: Setup = serde_json::from_str(&json_content)?;
-        Ok(setup.server)
+        Ok(setup)
     }
 }
-impl JsonLOAD for ServerJSON{}
+impl JsonLOADSERVER for ServerJSON{}
