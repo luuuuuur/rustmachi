@@ -42,7 +42,7 @@ async fn run_server() -> Result<(), std::io::Error> {
     let listener = bind_to(socket).await?;
     println!("Listener creado...escuchando en {:?}", socket);
     let (stream, addr) = listener.accept().await?;
-    stream.nodelay().unwrap();
+    stream.set_nodelay(true).unwrap();
     println!("Esperando conexiones...");
     println!("Conexion!: {}",addr);
     server_tcp::handle_client(stream, _device).await?;
@@ -60,7 +60,7 @@ async fn run_client() -> Result<(), std::io::Error> {
     let cli_device = cli_tunnel.create_device().await?;
     println!("TUN creado");
     let stream = TcpStream::connect((server_ip, server_port)).await?;
-    stream.nodelay().unwrap();
+    stream.set_nodelay(true).unwrap();
     println!("Conectado al servidor");
     
     client_tcp::handle_client(stream, cli_device).await?;
