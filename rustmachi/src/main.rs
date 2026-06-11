@@ -45,9 +45,8 @@ async fn run_server() -> Result<(), std::io::Error> {
     println!("Esperando conexiones...");
     let ssh_stream = TcpStream::connect((ssh_ip, ssh_port)).await?;
     println!("Conexion!: {}",addr);
-    tokio::spawn(async move {
-        server_tcp::handle_client(stream, ssh_stream).await.ok();
-    });
+    server_tcp::handle_client(stream, ssh_stream).await?;
+    
     Ok(())
 }
 
@@ -57,11 +56,9 @@ async fn run_client() -> Result<(), std::io::Error> {
     let server_ip = config_client.get_real();
     let server_port = config_client.get_real_port();
     println!("Conectando a {:?}:{}", server_ip, server_port);
-    
     let cli_tunnel = client_tun::ClientTunnel::new(config_client, 30, "RUSTMACHI Client".to_string());
     let cli_device = cli_tunnel.create_device().await?;
     println!("TUN creado");
-    
     let stream = TcpStream::connect((server_ip, server_port)).await?;
     println!("Conectado al servidor");
     
