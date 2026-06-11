@@ -1,0 +1,16 @@
+{
+    "Server":{
+        "virtual_ip":[10, 0, 10, 1],
+        "port":4444,
+        "ssh_ip":[127, 0, 0, 1],
+        "ssh_port":22,
+        "identifier":"SERVER"
+    },
+    "Client":{
+        "virtual_ip":[10, 0, 10, 2],
+        "server_real_ip": [54, 145, 17, 254],
+        "server_real_port": 4444,
+        "port":999,
+        "identifier":"CLIENT"
+    }
+}
