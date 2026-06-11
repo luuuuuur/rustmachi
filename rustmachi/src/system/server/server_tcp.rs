@@ -4,6 +4,7 @@
 use std::io::Error;
 use std::net::{SocketAddrV4};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tun_rs::AsyncDevice;
 use tokio::net::TcpStream;
 use tokio::net::TcpListener;
 //binds and return the listener
@@ -12,28 +13,20 @@ pub async fn bind_to(socket:SocketAddrV4)-> Result<TcpListener, Error>{
 }
 
 //for streams in listener.accept() -> use this function to operate those streams
-pub async fn handle_client(tcp: TcpStream, ssh_stream: TcpStream) -> Result<(), std::io::Error> {
+pub async fn handle_client(mut tcp: TcpStream, device: AsyncDevice) -> Result<(), Error>{
+    let mut tun_buffer = [0u8; 1300];
     let mut tcp_buffer = [0u8; 1300];
-    let mut ssh_buffer = [0u8; 1300];
-    let (mut tcp_read, mut tcp_write) = tcp.into_split();
-    let (mut ssh_read, mut ssh_write) = ssh_stream.into_split();
-    
+
     loop {
         tokio::select! {
-            n = tcp_read.read(&mut tcp_buffer) => {
-                match n? {
-                    0 => break, // conexión cerrada
-                    bytes => ssh_write.write_all(&tcp_buffer[..bytes]).await?,
-                }
+            Ok(n) = device.recv(&mut tun_buffer) => {
+                tcp.write_all(&tun_buffer[..n]).await?;
             }
-            n = ssh_read.read(&mut ssh_buffer) => {
-                match n? {
-                    0 => break,
-                    bytes => tcp_write.write_all(&ssh_buffer[..bytes]).await?,
-                }
+            Ok(n) = tcp.read(&mut tcp_buffer) => {
+                if n == 0 { break; }
+                device.send(&tcp_buffer[..n]).await?;
             }
         }
     }
-    
     Ok(())
 }

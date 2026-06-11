@@ -43,9 +43,8 @@ async fn run_server() -> Result<(), std::io::Error> {
     println!("Listener creado...escuchando en {:?}", socket);
     let (stream, addr) = listener.accept().await?;
     println!("Esperando conexiones...");
-    let ssh_stream = TcpStream::connect((ssh_ip, ssh_port)).await?;
     println!("Conexion!: {}",addr);
-    server_tcp::handle_client(stream, ssh_stream).await?;
+    server_tcp::handle_client(stream, _device).await?;
     
     Ok(())
 }
