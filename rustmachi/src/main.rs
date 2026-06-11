@@ -38,13 +38,13 @@ async fn run_server() -> Result<(), std::io::Error> {
     let _device = tunnel.create_tunnel().await?;
     println!("TUN creado");
     let socket = create(tunnel);
-    print!("Socket creado...");
+    println!("Socket creado...");
     let listener = bind_to(socket).await?;
-    print!("Listener creado...escuchando en {:?}", socket);
+    println!("Listener creado...escuchando en {:?}", socket);
     let (stream, addr) = listener.accept().await?;
-    print!("Esperando conexiones...");
+    println!("Esperando conexiones...");
     let ssh_stream = TcpStream::connect((ssh_ip, ssh_port)).await?;
-    print!("Conexion!: {}",addr);
+    println!("Conexion!: {}",addr);
     tokio::spawn(async move {
         server_tcp::handle_client(stream, ssh_stream).await.ok();
     });
