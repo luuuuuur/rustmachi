@@ -29,15 +29,22 @@ async fn main() -> Result<(), std::io::Error> {
 
 async fn run_server() -> Result<(), std::io::Error> {
     let MAGIC_SERVER = "RUSTMACHI";
+    println!("Iniciando servidor...");
     let config = <ServerJSON as JsonLOADSERVER>::setup_server().unwrap();
     let ssh_ip = config.get_sship();
     let ssh_port = config.get_sshport();
     let tunnel = Tunnel::new(MAGIC_SERVER.to_string(), config, 30);
+    println!("Creando TUN...");
     let _device = tunnel.create_tunnel().await?;
+    println!("TUN creado");
     let socket = create(tunnel);
+    print!("Socket creado...");
     let listener = bind_to(socket).await?;
-    let (stream, _) = listener.accept().await?;
+    print!("Listener creado...escuchando en {:?}", socket);
+    let (stream, addr) = listener.accept().await?;
+    print!("Esperando conexiones...");
     let ssh_stream = TcpStream::connect((ssh_ip, ssh_port)).await?;
+    print!("Conexion!: {}",addr);
     tokio::spawn(async move {
         server_tcp::handle_client(stream, ssh_stream).await.ok();
     });
