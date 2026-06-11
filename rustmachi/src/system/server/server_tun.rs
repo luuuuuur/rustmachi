@@ -23,20 +23,13 @@ impl Tunnel{
     }
 }
 impl TunnelTrait for Tunnel{
-    async fn create_tunnel(&self)-> Result<AsyncDevice,Error>{
-        match DeviceBuilder::new()
-        .name(self.identifier.clone())
-        .mtu(1400)
-        .ipv4(self.setup.get_ip(), self.netmask(),None)
-        .build_async()
-        {
-            Ok(device) => {
-                return Ok(device)
-            },
-            Err(e) => {
-                return Err(e)
-            }
-        };
+    async fn create_tunnel(&self) -> Result<AsyncDevice, Error> {
+        let device = DeviceBuilder::new()
+            .name(self.identifier.clone())
+            .mtu(1400)
+            .ipv4(self.setup.get_ip(), self.netmask(), None)
+            .build_async()?;
+        Ok(device)
     }
     fn netmask(&self) -> String{
         let mask = u32::MAX << (32 - self.netmask);
