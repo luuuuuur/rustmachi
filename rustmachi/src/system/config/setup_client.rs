@@ -4,7 +4,7 @@ use serde::Deserialize;
 use std::fs;
 #[derive(Deserialize,Debug)]
 pub struct ClientJSON{
-    pub ipv4: Ipv4Addr,
+    pub ipv4: [u8;4],
     pub port: u16,
     pub identifier: String
 }
@@ -15,7 +15,7 @@ pub struct Setup{
 }
 
 impl ClientJSON{
-    pub fn new(ipv4:Ipv4Addr,port:u16, identifier: String) -> Self{
+    pub fn new(ipv4:[u8;4],port:u16, identifier: String) -> Self{
         Self{
             ipv4,
             port,
@@ -25,7 +25,7 @@ impl ClientJSON{
 }
 impl Setup{
     pub fn ipv4(&self) -> std::net::Ipv4Addr {
-        self.client.ipv4
+        Ipv4Addr::from_octets(self.client.ipv4)
     }
     pub fn port(&self) -> u16 {
         self.client.port
@@ -36,7 +36,7 @@ impl Setup{
 }
 pub trait JsonLOAD{
     fn setup_client()->Result<Setup, Box<dyn Error>>{
-        let json_content = fs::read_to_string("setup.json")?;
+        let json_content = fs::read_to_string("./setup.json")?;
         let setup: Setup = serde_json::from_str(&json_content)?;
         Ok(setup)
     }

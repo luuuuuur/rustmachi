@@ -4,9 +4,9 @@ use serde::Deserialize;
 use std::fs;
 #[derive(Deserialize)]
 pub struct ServerJSON{
-    ipv4: Ipv4Addr,
+    virtual_ip: [u8;4],
     port: u16,
-    ssh_ip: Ipv4Addr,
+    ssh_ip: [u8; 4],
     ssh_port: u16
 }
 #[derive(Deserialize)]
@@ -16,9 +16,9 @@ pub struct Setup{
 }
 
 impl ServerJSON{
-    pub fn new(ipv4: Ipv4Addr, port: u16, ssh_ip: Ipv4Addr, ssh_port: u16)->Self{
+    pub fn new(virtual_ip: [u8;4], port: u16, ssh_ip: [u8;4], ssh_port: u16)->Self{
         Self{
-            ipv4,
+            virtual_ip,
             port,
             ssh_ip,
             ssh_port
@@ -27,13 +27,13 @@ impl ServerJSON{
 }
 impl Setup{
     pub fn get_ip(&self) -> std::net::Ipv4Addr {
-        self.server.ipv4
+        Ipv4Addr::from_octets(self.server.virtual_ip)
     }
     pub fn get_port(&self) -> u16{
         self.server.port
     }
     pub fn get_sship(&self)-> Ipv4Addr{
-        self.server.ssh_ip
+        Ipv4Addr::from(self.server.ssh_ip)
     }
     pub fn get_sshport(&self)-> u16{
         self.server.ssh_port
@@ -41,7 +41,7 @@ impl Setup{
 }
 pub trait JsonLOADSERVER{
     fn setup_server()->Result<Setup, Box<dyn Error>>{
-        let json_content = fs::read_to_string("setup.json")?;
+        let json_content = fs::read_to_string("./setup.json")?;
         let setup: Setup = serde_json::from_str(&json_content)?;
         Ok(setup)
     }

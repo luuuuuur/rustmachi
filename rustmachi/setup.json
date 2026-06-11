@@ -1,14 +1,14 @@
 {
     "Server":{
-        "virtual_ip":123231,
-        "port":8080,
-        "ssh_ip":323232,
+        "virtual_ip":[10, 0, 10, 1],
+        "port":4444,
+        "ssh_ip":[127, 0, 0, 1],
         "ssh_port":22,
-        "identifier":"random name"
+        "identifier":"SERVER"
     },
     "Client":{
-        "virtual_ip":1323123,
-        "port":3321323,
-        "identifier":"random name"
+        "virtual_ip":[10, 0, 10, 2],
+        "port":999,
+        "identifier":"CLIENT"
     }
 }
