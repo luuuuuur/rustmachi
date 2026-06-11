@@ -16,6 +16,7 @@ pub async fn bind_to(socket:SocketAddrV4)-> Result<TcpListener, Error>{
 }
 //Needs the tcp.accept as param
 pub async fn handle_client(mut tcp: TcpStream) -> Result<(), Error>{
+    
     let mut buffer= [0u8; 1300];
     loop{
         match tcp.read(&mut buffer).await {

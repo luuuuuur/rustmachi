@@ -47,11 +47,12 @@ async fn run_server() -> Result<(), std::io::Error> {
 async fn run_client() -> Result<(), std::io::Error> {
     let MAGIC_SERVER = "RUSTMACHI";
     let config_client = ClientJSON::setup_client().unwrap();
+    let server_real_ip = config_client.get_real();
+    let server_real_port = config_client.get_real_port();
     let cli_tunnel = client_tun::ClientTunnel::new(config_client, 30, MAGIC_SERVER.to_string());
     let _cli_device = cli_tunnel.create_device().await?;
-    let cli_socket = client_socket::create_socket(cli_tunnel);
-    let cli_listener = client_tcp::bind_to(cli_socket).await?;
-    let (cli_stream, _) = cli_listener.accept().await?;
+    let cli_stream = TcpStream::connect((server_real_ip,server_real_port)).await?;
+    
     tokio::spawn(async move {
         client_tcp::handle_client(cli_stream).await.ok();
     });
