@@ -26,7 +26,7 @@ impl TunnelTrait for Tunnel{
     async fn create_tunnel(&self) -> Result<AsyncDevice, Error> {
         let device = DeviceBuilder::new()
             .name(self.identifier.clone())
-            .mtu(1400)
+            .mtu(1200)
             .ipv4(self.setup.get_ip(), self.netmask(), None)
             .build_async()?;
         Ok(device)

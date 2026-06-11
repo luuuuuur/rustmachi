@@ -14,8 +14,8 @@ pub async fn bind_to(socket:SocketAddrV4)-> Result<TcpListener, Error>{
 
 //for streams in listener.accept() -> use this function to operate those streams
 pub async fn handle_client(mut tcp: TcpStream, device: AsyncDevice) -> Result<(), Error>{
-    let mut tun_buffer = [0u8; 1300];
-    let mut tcp_buffer = [0u8; 1300];
+    let mut tun_buffer = [0u8; 1200];
+    let mut tcp_buffer = [0u8; 1200];
 
     loop {
         tokio::select! {
